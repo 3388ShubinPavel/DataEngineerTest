@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  # База данных
+  dwh_db:
+    image: postgres:13
+    container_name: postgres_dwh
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+
+  # Запуск скриптов
+  dwh_elt:
+    build: .
+    container_name: python_elt
+    depends_on:
+      - dwh_db
+    env_file:
+      - .env
+    environment:
+      DB_HOST: dwh_db
